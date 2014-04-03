@@ -2,11 +2,11 @@
 ##################################
 #Copyright (c) 2014 Sam-Hentschel#
 ##################################
-
+folder="Philes"
 #Function to display the usage of the command
 function usage()
 {
-    printf "    phrackdownloader -d downloads_file_path -f main_folder_name [-h] [-i] -m newest_issue_of_phrack -t target_file_path [-v]\n"
+    printf "    philedownloader -d downloads_file_path -f main_folder_name [-h] [-i] -t target_file_path [-v] option1 [...]\n"
     printf "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n"
     printf "    d downloads_file_path -/- sets the path to your downloads folder (required if -i, or -h is not activated)\n"
     printf "    f main_folder_name -/- sets the name of the main folder (if not set, default is \"Philes\")\n"
@@ -14,13 +14,14 @@ function usage()
     printf "    i -/- turns on interactive mode (creates a dialogue)\n"
     printf "    t target_file_path -/- sets the path to your target folder (required if -i, or -h is not activated)\n"
     printf '    v -/- sets verbose mode on\n'
+    printf "    option1 ... -/- the options to be downloaded to the user's local directory"
 }
 
-#Function to take the input data and deliver the folders to the users
-function maker()
+#Function to take the input data and deliver the phrack issues to the users
+function phrack()
 {
     mkdir ${target}/${folder}
-    for i in $(seq $min $max)
+    for i in $(seq 1 $max)
     do
         name=$i
         echo '...Downloading File...'
@@ -55,6 +56,12 @@ function maker()
     done
 }
 
+#Function to take the input data and deliver the rfc issues to the user
+function rfc()
+{
+    echo "rfc"
+}
+
 #Function to initiate interactive mode of input
 function interactive()
 {
@@ -66,45 +73,97 @@ function interactive()
     read target
     echo 'What would you like the folder name for the storage of the issues to be?'
     read folder
-    maker
+    if [ "$folder" == "" ]
+    then
+        folder=Philes
+    fi
+    phrack
 }
 
 #Starts to check the options and start the respective next function (interactive or maker)
-while getopts ":d:f:him:t:v" arg
+while :
 do
-    case $arg in
-        d)
-            down=${OPTARG}
-            ;;
-        f)
-            folder=${OPTARG}
-            ;;
-        h)
+    case $1 in
+        (-h | --help | -\?)
             usage
             exit
             ;;
-        i)
+        (-i | --interact)
             interact=1
             break
             ;;
-        m)
-            max=${OPTARG}
+        (-d | --download)
+            down=$2
+            shift 2
             ;;
-        t)
-            target=${OPTARG}
+        (-f | --folder)
+            shift
+            folder=$1
+            shift 
             ;;
-        v)
+        (-t | --target)
+            target=$2
+            shift 2
+            ;;
+        (-v | --verbose)
             echo "verbose"
-            ;;
-        *)
-            usage
             exit
+            ;;
+        (--)
+            shift
+            break
+            ;;
+        (-*)
+            echo "invalid option"
+            shift
+            ;;
+        (*)
+            break
             ;;
     esac
 done
 if [ "$interact" == "1" ]
 then
     interactive
+elif [ ! "$target" ]
+then
+    echo "Target directory not specified"
+    usage
+    exit
+elif [ ! "$down" ]
+then
+    echo "Downloads directory not specified"
+    usage
+    exit
+elif [ ! "$1" ]
+then
+    echo "No options specified"
+    usage
+    exit
 else
-    maker
+    while [ "$1" != "" ]
+    do
+        option=$1
+        if [ "$option" == "phrack" ]
+        then
+            phrack_files=true
+            shift
+        elif [ "$option" == "rfc" ]
+        then
+            rfc_files=true
+            shift
+        else
+            echo "Invalid options passed"
+        fi
+    done
+fi
+if [ "$phrack_files" == "true" ]
+then
+    echo "What's the newest issue of Phrack?"
+    read max
+    phrack
+fi
+if [ "$rfc_files" == "true" ]
+then
+    rfc
 fi
