@@ -65,8 +65,6 @@ function rfc()
 #Function to initiate interactive mode of input
 function interactive()
 {
-    echo 'What is the newest issue of Phrack? '
-    read max
     echo 'What is the file path to your downloads folder?'
     read down
     echo 'What is the file path to your destination folder?'
@@ -77,7 +75,41 @@ function interactive()
     then
         folder=Philes
     fi
-    phrack
+    echo "What files would you like to download? (type phrack, or rfc) [type next to continue]"
+    while :
+    do
+        read option
+        if [ "$option" == "phrack" ]
+        then
+            phrack_files=true
+        elif [ "$option" == "rfc" ]
+        then
+            rfc_files=true
+        elif [ "$option" == "next" ]
+        then
+            break
+        else
+            echo "Invalid option, try again."
+        fi
+    done
+    if [ "$phrack_files" == "true" ]
+    then
+        echo 'What is the newest issue of Phrack? '
+        read max
+        phrack
+    elif [ "$rfc_files" == "true" ]
+    then
+        rfc
+    else
+        echo "Would you like to quit? (Y/n)"
+        read ans
+        if [ "$ans" == "Y" ]
+        then
+            exit
+        else
+            interactive
+        fi
+    fi
 }
 
 #Starts to check the options and start the respective next function (interactive or maker)
