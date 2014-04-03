@@ -13,6 +13,20 @@ do
         i)
             interactive=1
             ;;
+        o)
+            if [ "${OPTARG}" == "Phrack" ]
+            then
+                phrack=true
+            elif [ "${OPTARG}" == "RFCs" ]
+            then
+                rfc=true
+            elif [ "${OPTARG}" == "Java Books" ]
+            then
+                java=true
+            else
+                echo "Not a valid option"
+            fi
+            ;;
         t)
             target=${OPTARG}
             ;;
@@ -29,3 +43,6 @@ echo $folder
 echo $target
 echo $interactive
 echo done
+echo $phrack
+echo $rfc
+echo $java
