@@ -24,6 +24,7 @@ function maker()
     for i in $(seq $min $max)
     do
         name=$i
+        mkdir ${target}/${folder}/${i}
         echo '...Downloading File...'
         cd ${down}
         curl -O http://www.phrack.org/archives/tgz/phrack${name}.tar.gz
@@ -34,22 +35,8 @@ function maker()
         echo '-----Finished Ungunning the file-----'
         downloads_t=${down}/phrack${name}.tar
         echo '...Untarring file...'
-        tar -xzvf $downloads_t
+        tar -xzvf $downloads_t -C ${target}/${folder}/${i}
         echo '-----Finished Untarring the file-----'
-        download=${down}/${name}
-        echo '...Moving file...'
-        endpath=${target}/${folder}
-        mv $download $endpath
-        echo '-----Moved file-----'
-        echo '...Checking and fixing extension...'
-        for f in ${endpath}/${name}
-        do
-            if [ ${f: -4} != '.txt' ]
-            then
-                find $f -type f -not -name "*.*" -exec mv "{}" "{}".txt \;
-            fi
-        done
-        echo '-----Extensions correct-----'
         echo '...Deleting original files...'
         rm $downloads_t
         echo '-----Original Files Deleted-----'

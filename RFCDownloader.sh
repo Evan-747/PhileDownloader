@@ -21,6 +21,7 @@ function usage()
 function maker()
 {
     mkdir ${target}/${folder}
+    mkdir ${target}/${folder}/RFCs
     echo '...Downloading File...'
     echo 'This may take a while.'
     cd ${down}
@@ -32,13 +33,30 @@ function maker()
     echo '-----Finished Ungunning the file-----'
     downloads_t=${down}/RFC-all.tar
     echo '...Untarring file...'
-    tar -xzvf $downloads_t
+    tar -xzvf $downloads_t -C ${target}/${folder}/RFCs
     echo '-----Finished Untarring the file-----'
-    download=${down}/RFC-all
-    echo '...Moving file...'
-    endpath=${target}/${folder}
-    mv $download $endpath
-    echo '-----Moved file-----'
+    echo '...Deleting original files...'
+    rm $downloads_t
+    echo '-----Original Files Deleted-----'
+}
+
+function maker()
+{
+    mkdir ${target}/${folder}
+    mkdir ${target}/${folder}/RFCs
+    echo '...Downloading File...'
+    echo 'This may take a while.'
+    cd ${down}
+    curl -O ftp://ftp.rfc-editor.org/in-notes/tar/pdfrfc-all.tar.gz
+    echo '-----Download Complete-----'
+    downloads_g=${down}/pdfrfc-all.tar.gz
+    echo '...Ungunzipping file...'
+    gunzip $downloads_g
+    echo '-----Finished Ungunning the file-----'
+    downloads_t=${down}/pdfrfc-all.tar
+    echo '...Untarring file...'
+    tar -xzvf $downloads_t -C ${target}/${folder}/RFCs
+    echo '-----Finished Untarring the file-----'
     echo '...Deleting original files...'
     rm $downloads_t
     echo '-----Original Files Deleted-----'

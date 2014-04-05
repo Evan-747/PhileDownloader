@@ -20,10 +20,11 @@ function usage()
 #Function to take the input data and deliver the phrack issues to the users
 function phrack()
 {
-    mkdir ${target}/${folder}
+    mkdir ${target}/${folder}/Phrack
     for i in $(seq 1 $max)
     do
         name=$i
+        mkdir ${target}/${folder}/${i}
         echo '...Downloading File...'
         cd ${down}
         curl -O http://www.phrack.org/archives/tgz/phrack${name}.tar.gz
@@ -34,22 +35,8 @@ function phrack()
         echo '-----Finished Ungunning the file-----'
         downloads_t=${down}/phrack${name}.tar
         echo '...Untarring file...'
-        tar -xzvf $downloads_t
+        tar -xzvf $downloads_t -C ${target}/${folder}/${i}
         echo '-----Finished Untarring the file-----'
-        download=${down}/${name}
-        echo '...Moving file...'
-        endpath=${target}/${folder}
-        mv $download $endpath
-        echo '-----Moved file-----'
-        echo '...Checking and fixing extension...'
-        for f in ${endpath}/${name}
-        do
-            if [ ${f: -4} != '.txt' ]
-            then
-                find $f -type f -not -name "*.*" -exec mv "{}" "{}".txt \;
-            fi
-        done
-        echo '-----Extensions correct-----'
         echo '...Deleting original files...'
         rm $downloads_t
         echo '-----Original Files Deleted-----'
@@ -59,7 +46,22 @@ function phrack()
 #Function to take the input data and deliver the rfc issues to the user
 function rfc()
 {
-    echo "rfc"
+    mkdir ${target}/${folder}/RFCs
+    echo '...Downloading File...'
+    echo 'This may take a while.'
+    cd ${down}
+    curl -O ftp://ftp.rfc-editor.org/in-notes/tar/RFC-all.tar.gz
+    echo '-----Download Complete-----'
+    downloads_g=${down}/RFC-all.tar.gz
+    echo '...Ungunzipping file...'
+    gunzip $downloads_g
+    echo '-----Finished Ungunning the file-----'
+    downloads_t=${down}/RFC-all.tar
+    echo '...Untarring file...'
+    tar -xzvf $downloads_t -C ${target}/${folder}/RFCs
+    echo '...Deleting original files...'
+    rm $downloads_t
+    echo '-----Original Files Deleted-----'
 }
 
 #Function to initiate interactive mode of input
@@ -154,8 +156,10 @@ do
             ;;
     esac
 done
+
 if [ "$interact" == "1" ]
 then
+    mkdir ${target}/${folder}
     interactive
 elif [ ! "$target" ]
 then
@@ -173,6 +177,7 @@ then
     usage
     exit
 else
+    mkdir ${target}/${folder}
     while [ "$1" != "" ]
     do
         option=$1
