@@ -24,7 +24,7 @@ function phrack()
     for i in $(seq 1 $max)
     do
         name=$i
-        mkdir ${target}/${folder}/${i}
+        mkdir ${target}/${folder}/Phrack/${i}
         echo '...Downloading File...'
         cd ${down}
         curl -O http://www.phrack.org/archives/tgz/phrack${name}.tar.gz
@@ -35,7 +35,7 @@ function phrack()
         echo '-----Finished Ungunning the file-----'
         downloads_t=${down}/phrack${name}.tar
         echo '...Untarring file...'
-        tar -xzvf $downloads_t -C ${target}/${folder}/${i}
+        tar -xzvf $downloads_t -C ${target}/${folder}/Phrack/${i}
         echo '-----Finished Untarring the file-----'
         echo '...Deleting original files...'
         rm $downloads_t
