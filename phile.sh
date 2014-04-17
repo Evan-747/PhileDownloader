@@ -131,8 +131,7 @@ do
             shift 2
             ;;
         (-f | --folder)
-            shift
-            folder=$1
+            folder=$2
             shift 
             ;;
         (-t | --target)

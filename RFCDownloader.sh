@@ -2,7 +2,7 @@
 ##################################
 #Copyright (c) 2014 Sam-Hentschel#
 ##################################
-
+folder="RFCs"
 #Function to display the usage of the command
 function usage()
 {
@@ -82,31 +82,42 @@ function interactive()
 }
 
 #Starts to check the options and start the respective next function (interactive or maker)
-while getopts ":d:f:him:t:v" arg
+while :
 do
-    case $arg in
-        d)
-            down=${OPTARG}
-            ;;
-        f)
-            folder=${OPTARG}
-            ;;
-        h)
+    case $1 in
+        (-h | --help)
             usage
             exit
             ;;
-        i)
+        (-i | --interactive)
             interact=1
             break
             ;;
-        p)
+        (-d | --download)
+            down=$2
+            shift 2
+            ;;
+        (-f | --folder)
+            folder=$2
+            shift 2
+            ;;
+        (-p | --pdf)
             pdf=1
             ;;
-        t)
-            target=${OPTARG}
+        (-t | --target)
+            target=$2
+            shift 2
             ;;
-        v)
+        (-v | --verbose)
             echo "verbose"
+            ;;
+        (--)
+            shift
+            break
+            ;;
+        (-*)
+            echo "invalid option"
+            shift
             ;;
         *)
             usage

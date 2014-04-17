@@ -2,7 +2,7 @@
 ##################################
 #Copyright (c) 2014 Sam-Hentschel#
 ##################################
-
+folder="Phrack"
 #Function to display the usage of the command
 function usage()
 {
@@ -58,33 +58,45 @@ function interactive()
 }
 
 #Starts to check the options and start the respective next function (interactive or maker)
-while getopts ":d:f:him:t:v" arg
+while :
 do
-    case $arg in
-        d)
-            down=${OPTARG}
-            ;;
-        f)
-            folder=${OPTARG}
-            ;;
-        h)
+    case $1 in
+        (-h | --help | -\?)
             usage
             exit
             ;;
-        i)
+        (-i | --interactive)
             interact=1
             break
             ;;
-        m)
-            max=${OPTARG}
+        (-d | --download)
+            down=$2
+            shift 2
             ;;
-        t)
-            target=${OPTARG}
+        (-f | --folder)
+            folder=$2
+            shift 2
             ;;
-        v)
+        (-m | --max)
+            max=$2
+            shift 2
+            ;;
+        (-t | --target)
+            target=$2
+            shift 2
+            ;;
+        (-v | --verbose)
             echo "verbose"
+            exit
             ;;
-        *)
+        (--)
+            shift
+            break
+            ;;
+        (-*)
+            echo "invalid option"
+            shift
+        (*)
             usage
             exit
             ;;
